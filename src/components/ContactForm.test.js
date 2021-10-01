@@ -94,7 +94,7 @@ test('renders all firstName, lastName and email text when submitted. Does NOT re
   display(fnd, fni, FN);
   display(lnd, lni, LN);
   display(emd, emi, EM);
-  const messageDisplay = screen.queryByTestId("messageDisplay");
+  const messageDisplay = screen.queryByTestId(med);
   expect(messageDisplay).not.toBeInTheDocument();
 });
 
