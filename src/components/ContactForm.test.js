@@ -29,6 +29,11 @@ const display = (testID, intro, input) => {
   const display = screen.getByTestId(testID);
   expect(display).toHaveTextContent(intro + input);
 }
+const errors = length => {
+  const errorMessages = screen.getAllByTestId("error");
+  expect(errorMessages).toHaveLength(length);
+}
+const hasError = text => screen.getByText(text);
 
 test('renders without errors', ()=>{
   start();
@@ -45,15 +50,13 @@ test('renders the contact form header', ()=> {
 test('renders ONE error message if user enters less then 5 characters into firstname.', async () => {
   start();
   input(fn, "John");
-  const errorMessages = screen.getAllByTestId("error");
-  expect(errorMessages).toHaveLength(1);
+  errors(1);
 });
 
 test('renders THREE error messages if user enters no values into any fields.', async () => {
   start();
   submit();
-  const errorMessages = screen.getAllByTestId("error");
-  expect(errorMessages).toHaveLength(3);
+  errors(3);
 });
 
 test('renders ONE error message if user enters a valid first name and last name but no email.', async () => {
@@ -61,23 +64,20 @@ test('renders ONE error message if user enters a valid first name and last name 
   input(fn, "Jonathon");
   input(ln, "Smith");
   submit();
-  const errorMessages = screen.getAllByTestId("error");
-  expect(errorMessages).toHaveLength(1);
+  errors(1);
 });
 
 test('renders "email must be a valid email address" if an invalid email is entered', async () => {
   start();
   input(em, "Not an email");
-  const errorMessages = screen.getAllByTestId("error");
-  expect(errorMessages).toHaveLength(1);
-  expect(errorMessages[0]).toHaveTextContent(/email must be a valid email address/i);
+  errors(1);
+  hasError(/email must be a valid email address/i);
 });
 
 test('renders "lastName is a required field" if an last name is not entered and the submit button is clicked', async () => {
   start();
   submit();
-  const lastNameError = screen.getByText(/lastName is a required field/i);
-  expect(lastNameError).toBeInTheDocument();
+  hasError(/lastName is a required field/i);
 });
 
 test('renders all firstName, lastName and email text when submitted. Does NOT render message if message is not submitted.', async () => {
